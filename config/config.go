@@ -10,7 +10,8 @@ type Config struct {
 	RedisAddr  string
 }
 
-// LoadConfig initializes configuration values
+// LoadConfig initializes configuration values. The default values is used to run in local workspace.
+//The same keys are used as environment keys while building docker container.
 func LoadConfig() Config {
 	return Config{
 		ServerPort: getEnv("SERVER_PORT", ":8080"),

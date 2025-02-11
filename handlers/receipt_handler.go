@@ -9,6 +9,7 @@ import (
 	"receipt-processor/services"
 	"receipt-processor/storage"
 	"receipt-processor/utils"
+	"receipt-processor/config"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -59,7 +60,8 @@ func ProcessReceipt(c *gin.Context) {
 	}
 
 	id := uuid.New().String()
-	store := storage.NewRedisStore("localhost:6379")
+	cfg := config.LoadConfig()
+	store := storage.NewRedisStore(cfg.RedisAddr)
 
 	if err := store.SaveReceipt(id, receipt); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save receipt. Please try again."})
@@ -72,7 +74,8 @@ func ProcessReceipt(c *gin.Context) {
 // GetPoints handles GET /receipts/{id}/points
 func GetPoints(c *gin.Context) {
 	id := c.Param("id")
-	store := storage.NewRedisStore("localhost:6379")
+	cfg := config.LoadConfig()
+	store := storage.NewRedisStore(cfg.RedisAddr)
 
 	receipt, err := store.GetReceipt(id)
 	if err != nil {
